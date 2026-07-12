@@ -159,13 +159,13 @@ function Hero() {
                   <img src="/hummingbird-hero.jpg" alt="Hummingbird" className="hero-card-image" />
                 </SwiperSlide>
                 <SwiperSlide>
-                  <img src="/education.jpg" alt="Education" className="hero-card-image" />
+                  <img src="/evangelion-mecha-robot-8k-wallpaper-uhdpaper.com-298@5@d.jpg" alt="Education" className="hero-card-image" />
                 </SwiperSlide>
                 <SwiperSlide>
-                  <img src="/healthcare.jpg" alt="Healthcare" className="hero-card-image" />
+                  <img src="/wallhaven-og33jl.png" alt="Healthcare" className="hero-card-image" />
                 </SwiperSlide>
                 <SwiperSlide>
-                  <img src="/environment.jpg" alt="Environment" className="hero-card-image" />
+                  <img src="/wallhaven-yqmlmx.png" alt="Environment" className="hero-card-image" />
                 </SwiperSlide>
               </Swiper>
               <div className="floating-stat stat-top">
