@@ -9,7 +9,6 @@ function Home() {
   return (
     <div className="page-wrapper">
       <Hero />
-      <ImpactCarousel />
       <Stats />
       <Philosophy />
       <GlobalPresence />

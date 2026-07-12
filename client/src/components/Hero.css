@@ -4,6 +4,7 @@
 }
 
 .hero-grid {
+  position: relative; /* becomes the positioning context the card breaks out into */
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   gap: 60px;
@@ -98,17 +99,24 @@
 .hero-right {
   display: flex;
   justify-content: center;
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  aspect-ratio: 1 / 1; /* holds its grid space on its own, independent of the card */
 }
 
 .hero-card {
-  background: #ffffff;
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
-  border: 1px solid var(--border-color);
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-width: 460px;
-  transition: transform 0.3s ease;
+  height: 100%;
+  /* remove the old `width: 450px; aspect-ratio: 1/1;` from your second .hero-card block —
+     sizing now comes from .hero-right, GSAP will override top/left/width/height directly */
+  border-radius: 28px;
+  overflow: hidden;
+  z-index: 5;
+  contain: layout paint style;
 }
 
 .hero-card:hover {
@@ -117,12 +125,13 @@
 
 .hero-card-image-wrapper {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 100%;      /* was aspect-ratio: 1/1 — that's what was clipping things */
   border-radius: var(--radius-md);
   overflow: hidden;
-  margin-bottom: 24px;
   background-color: var(--bg-card-alt);
-  position:relative
+  position: relative;
+  /* margin-bottom: 24px removed — it's the only child, that margin was just
+     eating into the available height */
 }
 
 @media (max-width: 992px) {
@@ -145,6 +154,8 @@
 
 .hero-swiper .swiper-slide {
   display: flex;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .hero-swiper .swiper-pagination-bullet {
@@ -167,18 +178,6 @@
   overflow: visible;
 }
 
-.hero-card{
-  width:450px;
-  aspect-ratio:1/1;
-  border-radius:28px;
-  overflow:hidden;
-}
-
-.hero-card-image-wrapper{
-  position:relative;
-  overflow:hidden;
-}
-
 .floating-stat {
   position: absolute;
   background: rgba(255, 255, 255, 0.15);
@@ -189,6 +188,9 @@
   border-radius: 18px;
   padding: 14px 18px;
   z-index: 100;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .floating-stat h2{
