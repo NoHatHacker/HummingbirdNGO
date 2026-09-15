@@ -3,7 +3,14 @@ const Event = require("../models/Event");
 // GET ALL EVENTS
 const getEvents = async (req, res) => {
   try {
-    const events = await Event.find();
+    const { regionalCircle } = req.query;
+    const filter = {};
+
+    if (regionalCircle) {
+      filter.regionalCircle = regionalCircle;
+    }
+
+    const events = await Event.find(filter).sort({ createdAt: -1 });
 
     res.status(200).json(events);
   } catch (error) {
