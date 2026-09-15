@@ -23,6 +23,12 @@ const eventSchema = new mongoose.Schema(
     },
 
     images: [String],
+
+    regionalCircle: {
+      type: String,
+      enum: ["guwahati", "barpeta", "barpeta_road", "none"],
+      default: "none",
+    },
   },
   {
     timestamps: true,
