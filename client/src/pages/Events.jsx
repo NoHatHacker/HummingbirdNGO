@@ -1,6 +1,21 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import "./Events.css";
+import { useState } from "react";
+
+export default function Events() {
+
+  const events = [
+  {
+    id: 1,
+    title: "Food Drive",
+    date: "2026-06-12",
+    location: "Vellore",
+    image: "./public/hummingbird-hero.jpg",
+    description: "Distributed meals to over 180 families.",
+    volunteers: 42,
+    impact: "180+ Meals"
+  },
 
 function Events() {
   const [events, setEvents] = useState([]);
@@ -84,7 +99,7 @@ function Events() {
     <div className="page-wrapper events-page">
       <div className="container">
         {/* Hero Header */}
-        <div className="events-hero">
+        {/* <div className="events-hero">
           <div className="events-badge">
             <span className="pulse-dot"></span> LIVE GLOBAL OPERATIONS
           </div>
@@ -97,7 +112,7 @@ function Events() {
             operation or a community initiative, your presence creates the momentum needed for
             impact.
           </p>
-        </div>
+        </div>*/}
 
         {/* Featured + Calendar Grid */}
         <div className="events-top-grid">
@@ -127,6 +142,8 @@ function Events() {
               </a>
             </div>
           </div>
+          
+        </div>
 
           {/* Active Missions Calendar Card */}
           <div className="calendar-card">
@@ -182,6 +199,27 @@ function Events() {
               <a href="/team/regional_circles/barpeta" className="tf-link">View Regional Circle</a>
             </div>
           </div>
+        ))}
+      </div>
+
+      
+      {renderPaginationDots()}
+
+      {!showAll && totalPages > 1 && (
+        <div className="page-indicator">
+          Showing page {currentPage + 1} of {totalPages}
+        </div>
+      )}
+
+      <div className="controls">
+        <button 
+          className={`show-all-button ${showAll ? 'active' : ''} ` }
+          onClick={()=>{toggleShowAll(); setOpen(!open)}}
+        >
+          {showAll ? 'Show Pages' : 'Show All Events'}
+        </button>
+      </div>
+    </div>
         </div>
 
         {/* Upcoming Flights */}
@@ -220,4 +258,4 @@ function Events() {
   );
 }
 
-export default Events;
+
