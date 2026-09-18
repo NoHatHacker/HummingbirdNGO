@@ -135,6 +135,7 @@ const upcomingFlights = [
   ];
 
   const [currentPage, setCurrentPage] = useState(0);
+    const [loading, setLoading] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [open, setOpen] = useState(false);
   const eventsPerPage = 6;
@@ -320,16 +321,15 @@ const upcomingFlights = [
         <div>
           <div className="upcoming-section-header">
             <h2 className="upcoming-title">Upcoming Operations & Events</h2>
-            {loading && <span style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>Syncing live missions...</span>}
           </div>
 
           <div className="upcoming-grid">
-            {displayEvents.map((flight) => (
+            {upcomingFlights.map((flight) => (
               <div key={flight._id || flight.id} className="flight-card">
                 <div>
                   <div className="flight-img-wrapper">
-                    <img src={getEventImage(flight)} alt={flight.title} />
-                    <span className="date-tag-badge">{formatDateBadge(flight.date)}</span>
+                    <img src={flight.image} alt={flight.title} />
+                    <span className="date-tag-badge">{flight.date}</span>
                   </div>
                   <div className="flight-card-body">
                     <span className="flight-category">{flight.category || "MISSION"}</span>
