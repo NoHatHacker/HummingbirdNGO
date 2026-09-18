@@ -1,9 +1,41 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import api from "../services/api";
 import "./Footer.css";
 
 function Footer() {
-  const handleNewsletterSubmit = (event) => {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [feedback, setFeedback] = useState({ text: "", type: "" });
+
+  const handleNewsletterSubmit = async (event) => {
     event.preventDefault();
+    if (!email) return;
+
+    setLoading(true);
+    setFeedback({ text: "", type: "" });
+
+    try {
+      const res = await api.post("/subscribers", {
+        email,
+        source: "website_footer",
+      });
+      setFeedback({
+        text: res.data.message || "Subscribed successfully!",
+        type: "success",
+      });
+      setEmail("");
+    } catch (err) {
+      setFeedback({
+        text: err.response?.data?.message || "Failed to subscribe. Try again.",
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
+      setTimeout(() => {
+        setFeedback({ text: "", type: "" });
+      }, 5000);
+    }
   };
 
   return (
@@ -56,7 +88,6 @@ function Footer() {
           </div>
 
           <div className="footer-newsletter">
-            
             <form
               className="newsletter-form"
               onSubmit={handleNewsletterSubmit}
@@ -69,19 +100,35 @@ function Footer() {
                 id="newsletter-email"
                 type="email"
                 placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
                 required
               />
 
-              <button type="submit">Subscribe</button>
+              <button type="submit" disabled={loading}>
+                {loading ? "..." : "Subscribe"}
+              </button>
             </form>
-             <p>
-              
-             </p>
-             <p>
+
+            {feedback.text && (
+              <p
+                style={{
+                  color: feedback.type === "success" ? "#10b981" : "#ef4444",
+                  fontSize: "0.85rem",
+                  marginTop: "0.5rem",
+                  fontWeight: "600",
+                }}
+              >
+                {feedback.type === "success" ? "✓ " : "✗ "}
+                {feedback.text}
+              </p>
+            )}
+
+            <p style={{ marginTop: "0.5rem" }}>
               Subscribe to receive updates about our campaigns, events, and
               humanitarian work.
             </p>
-
           </div>
         </div>
 

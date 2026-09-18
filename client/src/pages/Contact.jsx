@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import api from "../services/api";
 import "./Contact.css";
 
 const Contact = () => {
   const [scrollAmount, setScrollAmount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [feedback, setFeedback] = useState({ text: "", type: "" });
 
   const [formData, setFormData] = useState({
     name: "",
@@ -38,10 +41,36 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log("Form data:", formData);
+    setLoading(true);
+    setFeedback({ text: "", type: "" });
+
+    try {
+      const res = await api.post("/contact", formData);
+      setFeedback({
+        text: res.data.message || "Message sent successfully!",
+        type: "success",
+      });
+      setFormData({
+        name: "",
+        email: "",
+        organisation: "",
+        subject: "General enquiry",
+        message: "",
+      });
+    } catch (err) {
+      setFeedback({
+        text: err.response?.data?.message || "Failed to send message. Please try again.",
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
+      setTimeout(() => {
+        setFeedback({ text: "", type: "" });
+      }, 6000);
+    }
   };
 
   const heroStyles = {
@@ -98,6 +127,23 @@ const Contact = () => {
             </p>
           </div>
 
+          {feedback.text && (
+            <div
+              style={{
+                padding: "1.25rem",
+                borderRadius: "8px",
+                marginBottom: "2rem",
+                textAlign: "center",
+                backgroundColor: feedback.type === "success" ? "#10b981" : "#ef4444",
+                color: "white",
+                fontWeight: "600",
+                fontSize: "0.95rem",
+              }}
+            >
+              {feedback.type === "success" ? "✓" : "✗"} {feedback.text}
+            </div>
+          )}
+
           <form className="contact-form" onSubmit={handleSubmit}>
             <div className="form-row">
               <div className="form-field">
@@ -112,6 +158,7 @@ const Contact = () => {
                   placeholder="Your name"
                   value={formData.name}
                   onChange={handleChange}
+                  disabled={loading}
                   required
                 />
               </div>
@@ -128,6 +175,7 @@ const Contact = () => {
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={handleChange}
+                  disabled={loading}
                   required
                 />
               </div>
@@ -146,6 +194,7 @@ const Contact = () => {
                 placeholder="Where are you writing from?"
                 value={formData.organisation}
                 onChange={handleChange}
+                disabled={loading}
               />
             </div>
 
@@ -159,6 +208,7 @@ const Contact = () => {
                 name="subject"
                 value={formData.subject}
                 onChange={handleChange}
+                disabled={loading}
                 required
               >
                 <option value="General enquiry">General enquiry</option>
@@ -181,14 +231,20 @@ const Contact = () => {
                 placeholder="Tell us what you would like to discuss."
                 value={formData.message}
                 onChange={handleChange}
+                disabled={loading}
                 required
               />
             </div>
 
             <div className="form-bottom">
-              <button type="submit" className="send-button">
-                Send message
-                <span aria-hidden="true">↗</span>
+              <button
+                type="submit"
+                className="send-button"
+                disabled={loading}
+                style={{ opacity: loading ? 0.6 : 1 }}
+              >
+                {loading ? "Sending..." : "Send message"}
+                {!loading && <span aria-hidden="true">↗</span>}
               </button>
 
               <p>We usually reply within 2–3 working days.</p>

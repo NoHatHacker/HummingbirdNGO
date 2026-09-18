@@ -228,8 +228,8 @@ const upcomingFlights = [
           </h1>
           <p className="events-desc">
             Join Hummingbird NGO at our upcoming flights and missions. Whether it's a field
-            operation or a gala evening, your presence creates the momentum needed for
-            global impact.
+            operation or a community initiative, your presence creates the momentum needed for
+            impact.
           </p>
         </div>*/}
 
@@ -319,31 +319,29 @@ const upcomingFlights = [
         {/* Upcoming Flights */}
         <div>
           <div className="upcoming-section-header">
-            <h2 className="upcoming-title">Upcoming Flights</h2>
-            <button className="filter-select-btn">
-              All Flight Types ▾
-            </button>
+            <h2 className="upcoming-title">Upcoming Operations & Events</h2>
+            {loading && <span style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>Syncing live missions...</span>}
           </div>
 
           <div className="upcoming-grid">
-            {upcomingFlights.map((flight) => (
-              <div key={flight.id} className="flight-card">
+            {displayEvents.map((flight) => (
+              <div key={flight._id || flight.id} className="flight-card">
                 <div>
                   <div className="flight-img-wrapper">
-                    <img src={flight.image} alt={flight.title} />
-                    <span className="date-tag-badge">{flight.date}</span>
+                    <img src={getEventImage(flight)} alt={flight.title} />
+                    <span className="date-tag-badge">{formatDateBadge(flight.date)}</span>
                   </div>
                   <div className="flight-card-body">
-                    <span className="flight-category">{flight.category}</span>
+                    <span className="flight-category">{flight.category || "MISSION"}</span>
                     <h3 className="flight-name">{flight.title}</h3>
                     <p className="flight-desc">{flight.description}</p>
-                    <p className="flight-loc">{flight.location}</p>
+                    <p className="flight-loc">{flight.location || "📍 Assam Chapters"}</p>
                   </div>
                 </div>
                 <div className="flight-card-footer">
-                  <button className="btn-secure-invitation" style={{ width: "100%", justifyContent: "center" }}>
-                    Secure Invitation
-                  </button>
+                  <a href="/contact" className="btn-secure-invitation" style={{ width: "100%", justifyContent: "center", textDecoration: "none" }}>
+                    RSVP / Inquire
+                  </a>
                 </div>
               </div>
             ))}
