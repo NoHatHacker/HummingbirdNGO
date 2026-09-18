@@ -1,5 +1,5 @@
-import Timeline from "../components/Timeline.jsx";
-
+import { useState, useEffect } from "react";
+import api from "../services/api";
 import "./Events.css";
 import { useState } from "react";
 
@@ -17,202 +17,83 @@ export default function Events() {
     impact: "180+ Meals"
   },
 
-  {
-    id: 2,
-    title: "Old Age Home Visit",
-    date: "2026-04-04",
-    location: "Chennai",
-    image: "./public/hummingbird-hero.jpg",
-    description: "Spent a day with senior citizens.",
-    volunteers: 18,
-    impact: "65 Residents"
-  },
+function Events() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  {
-    id: 3,
-    title: "Blood Donation Camp",
-    date: "2025-12-18",
-    location: "Vellore",
-    image: "./public/hummingbird-hero.jpg",
-    description: "Blood donation drive.",
-    volunteers: 70,
-    impact: "120 Units"
-  },
-  {
-    id: 4,
-    date: "NOV 18",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
-    category: "VOLUNTEER TRAINING",
-    title: "Hummingbird Ambassador Summit",
-    description: "Our annual briefing for global ambassadors. Align on the 2025 impact roadmap and strategic goals.",
-    location: "📍 The Shard Conference Center",
-  },
-  {
-    id: 5,
-    date: "NOV 18",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
-    category: "VOLUNTEER TRAINING",
-    title: "Hummingbird Ambassador Summit",
-    description: "Our annual briefing for global ambassadors. Align on the 2025 impact roadmap and strategic goals.",
-    location: "📍 The Shard Conference Center",
-  },
-  {
-    id: 6,
-    date: "NOV 18",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
-    category: "VOLUNTEER TRAINING",
-    title: "Hummingbird Ambassador Summit",
-    description: "Our annual briefing for global ambassadors. Align on the 2025 impact roadmap and strategic goals.",
-    location: "📍 The Shard Conference Center",
-  },
-  {
-    id: 7,
-    date: "NOV 18",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
-    category: "VOLUNTEER TRAINING",
-    title: "Hummingbird Ambassador Summit",
-    description: "Our annual briefing for global ambassadors. Align on the 2025 impact roadmap and strategic goals.",
-    location: "📍 The Shard Conference Center",
-  },
-  {
-    id: 8,
-    date: "NOV 18",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
-    category: "VOLUNTEER TRAINING",
-    title: "Hummingbird Ambassador Summit",
-    description: "Our annual briefing for global ambassadors. Align on the 2025 impact roadmap and strategic goals.",
-    location: "📍 The Shard Conference Center",
-  },
-  {
-    id: 9,
-    date: "NOV 18",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
-    category: "VOLUNTEER TRAINING",
-    title: "Hummingbird Ambassador Summit",
-    description: "Our annual briefing for global ambassadors. Align on the 2025 impact roadmap and strategic goals.",
-    location: "📍 The Shard Conference Center",
-  },
-  {
-    id: 10,
-    date: "NOV 18",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
-    category: "VOLUNTEER TRAINING",
-    title: "Hummingbird Ambassador Summit",
-    description: "Our annual briefing for global ambassadors. Align on the 2025 impact roadmap and strategic goals.",
-    location: "📍 The Shard Conference Center",
-  },
-];
-
-const upcomingFlights = [
-  {
-    id: 1,
-    date: "OCT 22",
-    image: "https://images.unsplash.com/photo-1511497584788-8767610419ea?auto=format&fit=crop&w=600&q=80",
-    category: "WORKSHOP",
-    title: "Sustainable Habitat Building",
-    description: "Learn advanced modular techniques for creating temporary shelters in climate-affected zones.",
-    location: "📍 Berlin Innovation Hub",
-  },
-  {
-    id: 2,
-    date: "NOV 05",
-    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80",
-    category: "FIELD MISSION",
-    title: "Health Cloud Deployment",
-    description: "Support our tech team as we launch decentralized health records in rural clinics.",
-    location: "📍 Hanoi Medical Plaza",
-  },
-  {
-    id: 3,
-    date: "NOV 18",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
-    category: "VOLUNTEER TRAINING",
-    title: "Hummingbird Ambassador Summit",
-    description: "Our annual briefing for global ambassadors. Align on the 2025 impact roadmap and strategic goals.",
-    location: "📍 The Shard Conference Center",
-  },
-  
+  const fallbackEvents = [
+    {
+      _id: "fb-1",
+      date: "2026-10-22",
+      images: ["https://images.unsplash.com/photo-1511497584788-8767610419ea?auto=format&fit=crop&w=600&q=80"],
+      category: "WORKSHOP",
+      title: "Sustainable Habitat Building",
+      description: "Learn advanced modular techniques for creating temporary shelters in climate-affected zones.",
+      location: "📍 Berlin Innovation Hub",
+    },
+    {
+      _id: "fb-2",
+      date: "2026-11-05",
+      images: ["https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80"],
+      category: "FIELD MISSION",
+      title: "Health Cloud Deployment",
+      description: "Support our tech team as we launch decentralized health records in rural clinics.",
+      location: "📍 Hanoi Medical Plaza",
+    },
+    {
+      _id: "fb-3",
+      date: "2026-11-18",
+      images: ["https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80"],
+      category: "VOLUNTEER TRAINING",
+      title: "Hummingbird Ambassador Summit",
+      description: "Our annual briefing for global ambassadors. Align on the upcoming impact roadmap and strategic goals.",
+      location: "📍 The Shard Conference Center",
+    },
   ];
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const [showAll, setShowAll] = useState(false);
-  const [open, setOpen] = useState(false);
-  const eventsPerPage = 6;
-  const totalPages = Math.ceil(events.length / eventsPerPage);
-  const currentEvents = showAll 
-    ? events 
-    : events.slice(currentPage * eventsPerPage, (currentPage + 1) * eventsPerPage);
-  const goToNextPage = () => {
-    if (!showAll && currentPage < totalPages - 1) {
-      setCurrentPage(currentPage + 1);
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const res = await api.get("/events");
+        if (res.data && res.data.length > 0) {
+          setEvents(res.data);
+        } else {
+          setEvents(fallbackEvents);
+        }
+      } catch (err) {
+        console.error("Failed to fetch events:", err);
+        setError("Showing scheduled highlight missions");
+        setEvents(fallbackEvents);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  const formatDateBadge = (dateString) => {
+    if (!dateString) return "UPCOMING";
+    try {
+      const d = new Date(dateString);
+      if (isNaN(d.getTime())) return dateString;
+      return d.toLocaleDateString("en-US", { month: "short", day: "numeric" }).toUpperCase();
+    } catch {
+      return "UPCOMING";
     }
   };
 
-  const goToPrevPage = () => {
-    if (!showAll && currentPage > 0) {
-      setCurrentPage(currentPage - 1);
+  const getEventImage = (event) => {
+    if (event.images && event.images.length > 0 && event.images[0]) {
+      return event.images[0];
     }
+    return "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80";
   };
 
-  const toggleShowAll = () => {
-    setShowAll(!showAll);
-    if (!showAll) {
-      setCurrentPage(0);
-    }
-  };
-   const renderPaginationDots = () => {
-    if (showAll || totalPages <= 1) return null;
-     return (
-      <div className="navigation-buttons">
-        <button 
-          className="nav-button prev" 
-          onClick={goToPrevPage}
-          disabled={currentPage === 0}
-        >
-          ← Prev
-        </button>
-        <span className="page-info">
-          Page {currentPage + 1} of {totalPages}
-        </span>
-        <button 
-          className="nav-button next" 
-          onClick={goToNextPage}
-          disabled={currentPage === totalPages - 1}
-        >
-          Next →
-        </button>
-      </div>
-    );
-  };
-
-   const renderNavigationButtons = () => {
-    if (showAll || totalPages <= 1) return null;
-    
-    return (
-      <div className="navigation-buttons">
-        <button 
-          className="nav-button prev" 
-          onClick={goToPrevPage}
-          disabled={currentPage === 0}
-        >
-          ← Prev
-        </button>
-        <span className="page-info">
-          Page {currentPage + 1} of {totalPages}
-        </span>
-        <button 
-          className="nav-button next" 
-          onClick={goToNextPage}
-          disabled={currentPage === totalPages - 1}
-        >
-          Next →
-        </button>
-      </div>
-    );
-  };
-
-
-
+  const featuredEvent = events[0] || fallbackEvents[0];
+  const displayEvents = events.length > 0 ? events : fallbackEvents;
 
   return (
     <div className="page-wrapper events-page">
@@ -228,69 +109,94 @@ const upcomingFlights = [
           </h1>
           <p className="events-desc">
             Join Hummingbird NGO at our upcoming flights and missions. Whether it's a field
-            operation or a gala evening, your presence creates the momentum needed for
-            global impact.
+            operation or a community initiative, your presence creates the momentum needed for
+            impact.
           </p>
         </div>*/}
 
-        <div className="Hero">
-          <div className="imgCont">
-            <img src="./public/hummingbird-hero.jpg" className="HeroImg"></img>
-          </div>
-          <div className="imgContent">
-            <span className="cont1">Changing lives</span>
-            <p className="cont2">one flight at a time</p>
-            <p className="cont3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Error qui similique neque incidunt, quisquam odit, commodi dolores rerum quia eos autem dolore aliquid ratione excepturi adipisci? Enim deserunt quisquam vero?</p>
-            <button>Join our Next Event</button>
-          </div>
-          <div className="HeroContent">
-            <div className="content">
-              <img src="./public/hummingbird-hero.jpg"></img>
-              <span>20+</span>
-              <p>Drives completed</p>
+        {/* Featured + Calendar Grid */}
+        <div className="events-top-grid">
+          {/* Featured Event Card */}
+          <div className="featured-event-card">
+            <div className="featured-img-wrapper">
+              <img
+                src={getEventImage(featuredEvent)}
+                alt={featuredEvent.title}
+              />
+              <span className="featured-badge">Featured Event</span>
             </div>
-            <div className="content">
-              <img src="./public/hummingbird-hero.jpg"></img>
-              <span>3000+</span>
-              <p>Lives Impacted</p>
-            </div>
-            <div className="content">
-              <img src="./public/hummingbird-hero.jpg"></img>
-              <span>130+</span>
-              <p>Volunteers</p>
-            </div>
-            <div className="content">
-              <img src="./public/hummingbird-hero.jpg"></img>
-              <span>5+</span>
-              <p>Locations</p>
+            <div className="featured-content">
+              <div>
+                <span className="featured-category">{featuredEvent.category || "COMMUNITY INITIATIVE"}</span>
+                <h2 className="featured-title">{featuredEvent.title}</h2>
+                <p className="featured-desc">
+                  {featuredEvent.description}
+                </p>
+                <div className="featured-meta">
+                  <span>📅 {featuredEvent.date ? new Date(featuredEvent.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : "Scheduled Soon"}</span>
+                  <span>{featuredEvent.location || "📍 Regional Chapters"}</span>
+                </div>
+              </div>
+              <a href="/contact" className="btn-secure-invitation" style={{ textDecoration: "none", textAlign: "center" }}>
+                Secure Invitation ➔
+              </a>
             </div>
           </div>
           
         </div>
 
-        <div>
-          <div className="upcoming-section-header">
-            <h2 className="upcoming-title">Past Flights</h2>
-            <button className="filter-select-btn">
-              All Flight Types ▾
-            </button>
-          </div>
+          {/* Active Missions Calendar Card */}
+          <div className="calendar-card">
+            <div>
+              <div className="calendar-header">
+                <h3 className="calendar-title">Active Missions</h3>
+                <div className="calendar-nav-btns">
+                  <span className="cal-nav-btn">‹</span>
+                  <span className="cal-nav-btn">›</span>
+                </div>
+              </div>
+              <div className="calendar-month">Field Deployment Schedule</div>
 
-          <div className={`event-carousel ${showAll ? "expanded" : ""}`}>
-      
-      
+              <div className="calendar-grid">
+                <span className="cal-day-name">M</span>
+                <span className="cal-day-name">T</span>
+                <span className="cal-day-name">W</span>
+                <span className="cal-day-name">T</span>
+                <span className="cal-day-name">F</span>
+                <span className="cal-day-name">S</span>
+                <span className="cal-day-name">S</span>
 
-      <div className="events-grid">
-        {currentEvents.map(event => (
-          <div key={event.id} className="event-card">
-            <div className="event-image">
-              <span>{event.image}</span>
+                <span className="cal-date muted">29</span>
+                <span className="cal-date">1</span>
+                <span className="cal-date">2 <span className="cal-dot"></span></span>
+                <span className="cal-date">3</span>
+                <span className="cal-date">4</span>
+                <span className="cal-date">5</span>
+                <span className="cal-date">6</span>
+
+                <span className="cal-date">7</span>
+                <span className="cal-date">8 <span className="cal-dot"></span></span>
+                <span className="cal-date">9</span>
+                <span className="cal-date active-today">10</span>
+                <span className="cal-date">11</span>
+                <span className="cal-date">12</span>
+                <span className="cal-date">13</span>
+
+                <span className="cal-date">14</span>
+                <span className="cal-date">15 <span className="cal-dot"></span></span>
+                <span className="cal-date">16</span>
+                <span className="cal-date">17</span>
+                <span className="cal-date">18</span>
+                <span className="cal-date">19 <span className="cal-dot"></span></span>
+                <span className="cal-date">20</span>
+              </div>
             </div>
-            <div className="event-details">
-              <h3 className="event-title">{event.title}</h3>
-              <p className="event-date">{event.date}</p>
-              <p className="event-description">{event.description}</p>
-              <button className="event-button">Register Now</button>
+
+            <div className="todays-flight-box">
+              <div className="tf-label">Active Field Initiative</div>
+              <div className="tf-title">Flood Relief & Health Camp: Barpeta</div>
+              <div className="tf-progress"></div>
+              <a href="/team/regional_circles/barpeta" className="tf-link">View Regional Circle</a>
             </div>
           </div>
         ))}
@@ -319,31 +225,29 @@ const upcomingFlights = [
         {/* Upcoming Flights */}
         <div>
           <div className="upcoming-section-header">
-            <h2 className="upcoming-title">Upcoming Flights</h2>
-            <button className="filter-select-btn">
-              All Flight Types ▾
-            </button>
+            <h2 className="upcoming-title">Upcoming Operations & Events</h2>
+            {loading && <span style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>Syncing live missions...</span>}
           </div>
 
           <div className="upcoming-grid">
-            {upcomingFlights.map((flight) => (
-              <div key={flight.id} className="flight-card">
+            {displayEvents.map((flight) => (
+              <div key={flight._id || flight.id} className="flight-card">
                 <div>
                   <div className="flight-img-wrapper">
-                    <img src={flight.image} alt={flight.title} />
-                    <span className="date-tag-badge">{flight.date}</span>
+                    <img src={getEventImage(flight)} alt={flight.title} />
+                    <span className="date-tag-badge">{formatDateBadge(flight.date)}</span>
                   </div>
                   <div className="flight-card-body">
-                    <span className="flight-category">{flight.category}</span>
+                    <span className="flight-category">{flight.category || "MISSION"}</span>
                     <h3 className="flight-name">{flight.title}</h3>
                     <p className="flight-desc">{flight.description}</p>
-                    <p className="flight-loc">{flight.location}</p>
+                    <p className="flight-loc">{flight.location || "📍 Assam Chapters"}</p>
                   </div>
                 </div>
                 <div className="flight-card-footer">
-                  <button className="btn-secure-invitation" style={{ width: "100%", justifyContent: "center" }}>
-                    Secure Invitation
-                  </button>
+                  <a href="/contact" className="btn-secure-invitation" style={{ width: "100%", justifyContent: "center", textDecoration: "none" }}>
+                    RSVP / Inquire
+                  </a>
                 </div>
               </div>
             ))}

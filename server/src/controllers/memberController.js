@@ -2,7 +2,18 @@ const Member = require("../models/Member");
 
 const getMembers = async (req, res) => {
   try {
-    const members = await Member.find();
+    const { regionalCircle, wing } = req.query;
+    const filter = {};
+
+    if (regionalCircle) {
+      filter.regionalCircle = regionalCircle;
+    }
+
+    if (wing) {
+      filter.wing = wing;
+    }
+
+    const members = await Member.find(filter).sort({ servingSince: -1 });
 
     res.status(200).json(members);
   } catch (error) {
