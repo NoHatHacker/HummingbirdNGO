@@ -357,6 +357,7 @@ const upcomingFlights = [
         </div>
       </div>
     </div>
+  </div>
   );
 }
 
