@@ -155,6 +155,8 @@ const upcomingFlights = [
     }
   };
 
+  const featuredEvent = events[0] || fallbackEvents[0];
+  const displayEvents = events.length > 0 ? events : fallbackEvents;
   const toggleShowAll = () => {
     setShowAll(!showAll);
     if (!showAll) {
@@ -211,8 +213,6 @@ const upcomingFlights = [
       </div>
     );
   };
-
-
 
 
   return (
@@ -277,10 +277,18 @@ const upcomingFlights = [
             </button>
           </div>
 
-          <div className={`event-carousel ${showAll ? "expanded" : ""}`}>
-      
-      
+        <div>
+          <div className="upcoming-section-header">
+            <h2 className="upcoming-title">Past Flights</h2>
+            <button className="filter-select-btn">
+              All Flight Types ▾
+            </button>
+          </div>
 
+          <div className={`event-carousel ${showAll ? "expanded" : ""}`}>
+     
+     
+     
       <div className="events-grid">
         {currentEvents.map(event => (
           <div key={event.id} className="event-card">
